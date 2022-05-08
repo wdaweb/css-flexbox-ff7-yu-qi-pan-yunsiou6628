@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      box-sizing: border-box;
+      font-family: '標楷體';
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+    }
+
+    /* 棋盤 */
+    #container {
+      width: 950px;
+      height: 950px;
+      /* background: blue; */
+
+      display: flex;
+      position: relative;
+    }
+
+    .checkerboard {
+      width: 800px;
+      height: 850px;
+      padding: 0 80px;
+      /* background: lightcoral; */
+      border: 1px solid #000;
+      margin: auto;
+      /* top: 100px; */
+
+      display: flex;
+      position: relative;
+    }
+
+    table,
+    tr,
+    td {
+      width: 660px;
+      height: 80px;
+      /* background: lightblue; */
+      border: 2px solid #000;
+      /* border-collapse 讓兩框線變成一層 */
+      border-collapse: collapse;
+      margin: auto;
+    }
+
+    /* 棋盤斜線 */
+    tr:nth-child(1) td:nth-child(4) {
+      background:
+        linear-gradient(45deg, transparent 49.5%, black 49.5%, black 50.5%, transparent 50.5%);
+    }
+
+    tr:nth-child(1) td:nth-child(5) {
+      background:
+        linear-gradient(-45deg, transparent 49.5%, black 49.5%, black 50.5%, transparent 50.5%);
+    }
+
+    tr:nth-child(2) td:nth-child(4) {
+      background:
+        linear-gradient(-45deg, transparent 49.5%, black 49.5%, black 50.5%, transparent 50.5%);
+    }
+
+    tr:nth-child(2) td:nth-child(5) {
+      background:
+        linear-gradient(45deg, transparent 49.5%, black 49.5%, black 50.5%, transparent 50.5%);
+    }
+
+
+    tr:nth-child(8) td:nth-child(4) {
+      background:
+        linear-gradient(45deg, transparent 49.5%, black 49.5%, black 50.5%, transparent 50.5%);
+    }
+
+    tr:nth-child(8) td:nth-child(5) {
+      background:
+        linear-gradient(-45deg, transparent 49.5%, black 49.5%, black 50.5%, transparent 50.5%);
+    }
+
+    tr:nth-child(9) td:nth-child(4) {
+      background:
+        linear-gradient(-45deg, transparent 49.5%, black 49.5%, black 50.5%, transparent 50.5%);
+    }
+
+    tr:nth-child(9) td:nth-child(5) {
+      background:
+        linear-gradient(45deg, transparent 49.5%, black 49.5%, black 50.5%, transparent 50.5%);
+    }
+
+    /* 楚河漢界 */
+    .river {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-around;
+      /* background: orange; */
+    }
+
+    .river span {
+      font-size: 60px;
+    }
+
+    /* 旗子範圍 */
+    .piece_scope {
+      width: 950px;
+      height: 950px;
+      /* opacity: 80%; */
+      /* background: lightskyblue; */
+      position: absolute;
+    }
+
+    /* 棋子 */
+    .piece {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .block{
+      width: 100%;
+      height: 50%;
+      /* background: lightpink; */
+
+      display: flex;
+      justify-content: center;
+      /* flex-direction: column; */
+    }
+
+    .block div {
+      font-size: 40px;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      background: white;
+      border: 1px solid #000;
+      border-radius: 50%;
+      margin: 90px 15px;
+
+      position: relative;
+    }
+
+    .block div::after{
+      content:'包';
+      width: 50px;
+      height: 50px;
+      background: white;
+      border: 1px solid #000;
+      border-radius: 50%;
+
+      position: absolute;
+      top: 156px;
+      left: 0px;
+    }
+
+    /* 單數 + 4和6 div 的 偽元素 none */
+    .block div:nth-child(odd)::after{
+      display: none;
+    }
+    .block div:nth-child(4)::after{
+      display: none;
+    }
+    .block div:nth-child(6)::after{
+      display: none;
+    }
+
+    .block div::before{
+      content:'卒';
+      width: 50px;
+      height: 50px;
+      background: white;
+      border: 1px solid #000;
+      border-radius: 50%;
+      /* background: lawngreen; */
+      z-index: 5;
+
+      position: absolute;
+      top: 240px;
+      left: 0px;
+    }
+
+    /* 雙數 div 的 偽元素 none */
+    .block div:nth-child(even)::before{
+      display: none;
+    }
+
+    .red {
+      width: 100%;
+      height: 50%;
+      /* background: orange; */
+
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      /* flex-direction: column; */
+    }
+
+    .red div {
+      font-size: 40px;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      line-height: 50px;
+      color: red;
+      background: white;
+      border: 1px solid #000;
+      border-radius: 50%;
+      margin: 90px 15px;
+
+      position: relative;
+    }
+
+    .red div::after{
+      content:'炮';
+      width: 50px;
+      height: 50px;
+      background: white;
+      border: 1px solid #000;
+      border-radius: 50%;
+
+      position: absolute;
+      top: -156px;
+      left: 0px;
+    }
+
+    /* 單數 + 4和6 div 的 偽元素 none */
+    .red div:nth-child(odd)::after{
+      display: none;
+    }
+    .red div:nth-child(4)::after{
+      display: none;
+    }
+    .red div:nth-child(6)::after{
+      display: none;
+    }
+
+    .red div::before{
+      content:'兵';
+      width: 50px;
+      height: 50px;
+      background: white;
+      border: 1px solid #000;
+      border-radius: 50%;
+      
+      /* background: lawngreen; */
+
+      position: absolute;
+      top: -240px;
+      left: 0px;
+    }
+
+    /* 雙數 div 的 偽元素 none */
+    .red div:nth-child(even)::before{
+      display: none;
+    }
+
+    /* 左右文字 */
+    p {
+      font-size: 45px;
+      writing-mode: vertical-rl;
+      /* background: lightpink; */
+      padding: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container">
+
+    <!-- 文字 -->
+    <p>棋盤裡，車無輪，馬無韁，叫聲將軍提防提防</p>
+
+    <!-- 棋盤 -->
+    <div class="checkerboard">
+
+      <!-- 旗子範圍 設一個跟棋盤大小一樣範圍 放棋子用 -->
+      <!-- <div class="piece_scope"></div> -->
+
+      <!-- 棋盤格線 -->
+      <table>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td colspan="8">
+            <div class="river">
+              <span>楚河</span>
+              <span>漢界</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </table>
+
+
+    </div>
+
+    <!-- 旗子範圍 設一個跟棋盤大小一樣範圍 放棋子用 -->
+    <div class="piece_scope">
+      <!-- 棋子 -->
+      <div class="piece">
+
+        <div class="block">
+          <div>車</div>
+          <div>馬</div>
+          <div>象</div>
+          <div>士</div>
+          <div>將</div>
+          <div>士</div>
+          <div>象</div>
+          <div>馬</div>
+          <div>車</div>
+        </div>
+
+        <div class="red">
+          <div>俥</div>
+          <div>傌</div>
+          <div>相</div>
+          <div>仕</div>
+          <div>帥</div>
+          <div>仕</div>
+          <div>相</div>
+          <div>傌</div>
+          <div>俥</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 文字 -->
+    <p>圖畫裡，龍不吟，虎不嘯，小小書僮可笑可笑</p>
+
+  </div>
+</body>
+
+</html>
